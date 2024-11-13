@@ -1,9 +1,10 @@
-import 'package:feather_icons/feather_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todoapp/addToDo.dart';
-import 'package:todoapp/widgets/todoList.dart';
+
 import 'package:url_launcher/url_launcher.dart';
+
+import 'widgets/todoList.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -13,24 +14,22 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  String text = 'Simple Text';
-
   List<String> todoList = [];
 
-  void addTodo({required String todoText}) {
+  void addToDo({required String todoText}) {
     if (todoList.contains(todoText)) {
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Already Exists'),
-            content: Text('This todo data already exists'),
+            title: Text("Already Exists"),
+            content: Text("This to do data already exists"),
             actions: [
               InkWell(
                 onTap: () {
                   Navigator.pop(context);
                 },
-                child: Text('Close'),
+                child: Text("Close"),
               ),
             ],
           );
@@ -39,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
       return;
     }
     setState(() {
-      todoList.add(todoText);
+      todoList.insert(0, todoText);
     });
     updateLocalData();
     Navigator.pop(context);
@@ -53,14 +52,14 @@ class _MainScreenState extends State<MainScreen> {
   void loadData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     todoList = (prefs.getStringList('todoList') ?? []).toList();
-
     setState(() {});
   }
 
   @override
   void initState() {
-    loadData();
+    // TODO: implement initState
     super.initState();
+    loadData();
   }
 
   void showAddTodoBottomSheet() {
@@ -71,11 +70,9 @@ class _MainScreenState extends State<MainScreen> {
         return Padding(
           padding: MediaQuery.of(context).viewInsets,
           child: Container(
-            padding: EdgeInsets.all(20),
             height: 200,
-            child: AddToDo(
-              addTodo: addTodo,
-            ),
+            padding: EdgeInsets.all(20),
+            child: AddToDo(addToDo: addToDo),
           ),
         );
       },
@@ -85,40 +82,30 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        shape: CircleBorder(),
-        backgroundColor: Colors.blueGrey[900],
-        child: Icon(Icons.add, color: Colors.white,),
-        onPressed: showAddTodoBottomSheet,
-      ),
       drawer: Drawer(
         child: Column(
           children: [
             Container(
               color: Colors.blueGrey[900],
+              height: 200,
               width: double.infinity,
-              height: 100,
-              child: Center(
-                child: Text(
-                  'Todo App',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+              child: Text(
+                "Todo App",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             ListTile(
-              onTap: () async {
-                try {
-                  await launchUrl(Uri.parse('https://pub.dev/'));
-                } catch (e) {
-                  print('Error launching URL: $e');
-                }
+              onTap: () {
+                launchUrl(
+                  Uri.parse("https://www.youtube.com/watch?v=EaVFvs16Us4"),
+                );
               },
               leading: Icon(Icons.person),
               title: Text(
-                'About Me',
+                "About Me",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
@@ -132,7 +119,7 @@ class _MainScreenState extends State<MainScreen> {
               },
               leading: Icon(Icons.email),
               title: Text(
-                'Contact Me',
+                "Contact Me",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
@@ -144,19 +131,19 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: Text("Todo App"),
         centerTitle: true,
-        actions: [
-          InkWell(
-            onTap: showAddTodoBottomSheet,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(
-                Icons.add,
-              ),
-            ),
-          ),
-        ],
       ),
-      body: TodolistBuilder(
+      floatingActionButton: FloatingActionButton(
+        shape: CircleBorder(),
+        backgroundColor: Colors.blueGrey[900],
+        onPressed: () {
+          showAddTodoBottomSheet();
+        },
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
+      body: TodoListBuiler(
         todoList: todoList,
         updateLocalData: updateLocalData,
       ),

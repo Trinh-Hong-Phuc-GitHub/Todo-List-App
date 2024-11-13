@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:todoapp/mainScreen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MyApp(),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -22,3 +24,4 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+

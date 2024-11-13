@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-class TodolistBuilder extends StatefulWidget {
+class TodoListBuiler extends StatefulWidget {
   List<String> todoList;
   void Function() updateLocalData;
 
-  TodolistBuilder(
+  TodoListBuiler(
       {super.key, required this.todoList, required this.updateLocalData});
 
   @override
-  State<TodolistBuilder> createState() => _TodolistState();
+  State<TodoListBuiler> createState() => _TodoListBuilerState();
 }
 
-class _TodolistState extends State<TodolistBuilder> {
-  void onItemCLicked({required int index}) {
+class _TodoListBuilerState extends State<TodoListBuiler> {
+  void onItemClicked({required int index}) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -27,7 +27,7 @@ class _TodolistState extends State<TodolistBuilder> {
               widget.updateLocalData();
               Navigator.pop(context);
             },
-            child: Text('Mark as Done'),
+            child: Text("Mask As Done!"),
           ),
         );
       },
@@ -37,41 +37,38 @@ class _TodolistState extends State<TodolistBuilder> {
   @override
   Widget build(BuildContext context) {
     return (widget.todoList.isEmpty)
-        ? Center(
-            child: Text('No Item In Your Todo List'),
-          )
+        ? Text("No item on your todo list")
         : ListView.builder(
-            itemCount: widget.todoList.length,
-            itemBuilder: (context, index) {
-              return Dismissible(
-                key: UniqueKey(),
-                direction: DismissDirection.startToEnd,
-                background: Container(
-                  color: Colors.green[300],
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Icon(Icons.check),
-                      ),
-                    ],
-                  ),
+      itemCount: widget.todoList.length,
+      itemBuilder: (context, index) {
+        return Dismissible(
+          key: UniqueKey(),
+          direction: DismissDirection.startToEnd,
+          background: Container(
+            color: Colors.green,
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(Icons.check),
                 ),
-                onDismissed: (direction) {
-                  setState(() {
-                    widget.todoList.removeAt(index);
-                  });
-                  widget.updateLocalData();
-                  Navigator.pop(context);
-                },
-                child: ListTile(
-                  onTap: () {
-                    onItemCLicked(index: index);
-                  },
-                  title: Text(widget.todoList[index]),
-                ),
-              );
+              ],
+            ),
+          ),
+          onDismissed: (direction) {
+            setState(() {
+              widget.todoList.removeAt(index);
+            });
+            widget.updateLocalData();
+          },
+          child: ListTile(
+            onTap: () {
+              onItemClicked(index: index);
             },
-          );
+            title: Text(widget.todoList[index]),
+          ),
+        );
+      },
+    );
   }
 }
